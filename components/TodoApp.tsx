@@ -10,7 +10,13 @@ import { Todo } from "@/lib/type";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 import TodoItem from "./TodoItem";
 
@@ -34,30 +40,42 @@ export default function TodoApp() {
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex h-screen items-center justify-center">
         <Button onClick={signIn}>Login with Google</Button>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center p-4">
-      <Card className="w-full max-w-xl">
-        <CardContent className="p-6 space-y-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold">My Todos</h1>
-            <Button variant="destructive" onClick={logout}>
-              Logout
-            </Button>
-          </div>
+    <div className="flex justify-center px-4 py-10">
+      <Card className="w-full max-w-2xl shadow-xl rounded-2xl">
+        
+        {/* HEADER */}
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-xl font-semibold">
+            My Tasks
+          </CardTitle>
 
+          <Button variant="ghost" onClick={logout}>
+            Logout
+          </Button>
+        </CardHeader>
+
+        <Separator />
+
+        <CardContent className="space-y-4 p-6">
+          
+          {/* INPUT */}
           <div className="flex gap-2">
             <Input
+              placeholder="What needs to be done?"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Add a todo..."
+              className="h-11"
             />
+
             <Button
+              className="h-11"
               onClick={() => {
                 addTodo(user.uid, input);
                 setInput("");
@@ -67,14 +85,17 @@ export default function TodoApp() {
             </Button>
           </div>
 
+          {/* LIST */}
           <div className="space-y-2">
-            {todos.length === 0 && (
-              <p className="text-sm text-gray-500">No todos yet.</p>
+            {todos.length === 0 ? (
+              <div className="text-center py-10 text-muted-foreground text-sm">
+                No tasks yet. Add one to get started ✨
+              </div>
+            ) : (
+              todos.map((todo) => (
+                <TodoItem key={todo.id} todo={todo} />
+              ))
             )}
-
-            {todos.map((todo) => (
-              <TodoItem key={todo.id} todo={todo} />
-            ))}
           </div>
         </CardContent>
       </Card>
